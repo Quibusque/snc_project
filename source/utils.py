@@ -20,7 +20,7 @@ def format_id_to_filename(df: pd.DataFrame, file_name_key:str) -> pd.DataFrame:
     return df
 
 
-def remove_wrong_entries(df: pd.DataFrame, img_dir: str) -> None:
+def remove_wrong_entries(df: pd.DataFrame, img_dir: str, file_name_key:str) -> None:
     """
     Removes entries from the dataframe that do not have corresponding files in
     the image directory.
@@ -30,10 +30,11 @@ def remove_wrong_entries(df: pd.DataFrame, img_dir: str) -> None:
         img_dir (str): path to image directory
     """
     dir_files_set = set(os.listdir(img_dir))
-    df_files_set = set(df["file_name"].tolist())
+    df_files_set = set(df[file_name_key].tolist())
 
     # missing files are in the dataframe but not in the directory
     missing_files = df_files_set - dir_files_set
 
-    # remove the missing files from the dataframe
-    df.query("file_name not in @missing_files", inplace=True)
+    # remove entries with df[file_name_key] in missing_files
+    df = df[~df[file_name_key].isin(missing_files)]
+    return df
