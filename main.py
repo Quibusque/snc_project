@@ -3,7 +3,8 @@ import pandas as pd
 from source.geo_regions import get_poly_list, get_point_region
 from source.utils import format_id_to_filename, remove_wrong_entries
 
-def make_labelled_dataframe(csv_path,img_dir,label_key = "label",file_name_key="file_name"):
+
+def make_labelled_dataframe(csv_path, img_dir, label_key, file_name_key):
     # create a dataframe with the labels
     df = pd.read_csv(csv_path)
     df = format_id_to_filename(df, file_name_key)
