@@ -3,14 +3,32 @@ import os
 
 
 def format_id_to_filename(df: pd.DataFrame, file_name_key:str) -> pd.DataFrame:
-    # add a ".jpeg" to the id column of the dataframe
+    """
+    Changes the name of the "id" column of the dataframe to file_name_key and
+    appends ".jpeg" to each entry in the column.
+
+    Args:
+        df (pd.DataFrame): dataframe to modify
+        file_name_key (str): new name of the "id" column
+
+    Returns:
+        pd.DataFrame: modified dataframe
+    """
     df["id"] = df["id"].apply(lambda x: x + ".jpeg")
-    # and rename the id to file_name
+    
     df = df.rename(columns={"id": file_name_key})
     return df
 
 
 def remove_wrong_entries(df: pd.DataFrame, img_dir: str) -> None:
+    """
+    Removes entries from the dataframe that do not have corresponding files in
+    the image directory.
+
+    Args:
+        df (pd.DataFrame): dataframe
+        img_dir (str): path to image directory
+    """
     dir_files_set = set(os.listdir(img_dir))
     df_files_set = set(df["file_name"].tolist())
 
