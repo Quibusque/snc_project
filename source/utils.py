@@ -127,3 +127,29 @@ def prepare_dataframe_and_files_for_training(
         )
 
     return df_good, df_test
+
+def labels_for_dataset(df: pd.DataFrame, label_key: str) -> (list, dict):
+    """
+    This function converts the int labels in the dataframe to a list of ints
+    in the range [0,num_classes) and returns the list
+
+    This is necessary because tf datasets with int labels require
+    the labels to be in the range [0,num_classes).
+
+    Args:
+        df (pd.DataFrame): dataframe with the labels
+        label_key (str): name of the column containing the labels
+    Returns:
+        true_label_list (list): list of labels in the range [0,num_classes)
+    """
+    # list of labels
+    label_list = df[label_key].tolist()
+    # unique labels, in order of frequency
+    labels = df[label_key].value_counts().keys()
+
+    # mapping brings labels to the range [0,num_classes)
+    mapping = {num: index for index, num in enumerate(labels)}
+    # true_label_list is the list of labels in the range [0,num_classes)
+    true_label_list = [mapping[value] for value in label_list]
+
+    return true_label_list
