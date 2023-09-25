@@ -1,0 +1,6 @@
+#ignore pychace
+__pycache__/
+#ignore streetview-photospheres
+streetview-photospheres/
+#ignore .vscode
+.vscode/
