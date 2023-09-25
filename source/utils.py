@@ -20,7 +20,7 @@ def format_id_to_filename(df: pd.DataFrame, file_name_key: str) -> pd.DataFrame:
     return df
 
 
-def remove_wrong_entries(df: pd.DataFrame, img_dir: str, file_name_key: str) -> None:
+def remove_wrong_entries(df: pd.DataFrame, img_dir: str, file_name_key: str) -> pd.DataFrame:
     """
     Removes entries from the dataframe that do not have corresponding files in
     the image directory.
@@ -39,6 +39,24 @@ def remove_wrong_entries(df: pd.DataFrame, img_dir: str, file_name_key: str) -> 
     df = df[~df[file_name_key].isin(missing_files)]
     return df
 
+def delete_wrong_files(df: pd.DataFrame, img_dir: str, file_name_key: str) -> None:
+    """
+    Deletes files in the image directory that do not have corresponding entries
+    in the dataframe.
+
+    Args:
+        df (pd.DataFrame): dataframe
+        img_dir (str): path to image directory
+    """
+    dir_files_set = set(os.listdir(img_dir))
+    df_files_set = set(df[file_name_key].tolist())
+
+    # extra files are in the directory but not in the dataframe
+    extra_files = dir_files_set - df_files_set
+
+    # delete files in extra_files
+    for file_name in extra_files:
+        os.remove(os.path.join(img_dir, file_name))
 
 def sample_classes(
     df: pd.DataFrame, label_key: str, num_samples: int, file_name_key: str, seed: int
@@ -106,8 +124,21 @@ def prepare_dataframe_and_files_for_training(
         df_good (pd.DataFrame): dataframe with the sampled good labels
         df_test (pd.DataFrame): dataframe with the test images
     """
-    # create the dataframe with the images that have the good labels
-    df_good = df[df[label_key].isin(chosen_labels)]
+    # create the bad_img_dir and test_img_dir if they don't exist
+    if not os.path.exists(bad_img_dir):
+        os.makedirs(bad_img_dir)
+    if not os.path.exists(test_img_dir):
+        os.makedirs(test_img_dir)
+
+    #if the directories bad_img_dir and test_img_dir are not empty, raise an error
+    if len(os.listdir(bad_img_dir)) != 0:
+        raise ValueError("bad_img_dir must be empty")
+    if len(os.listdir(test_img_dir)) != 0:
+        raise ValueError("test_img_dir must be empty")
+
+
+    # create the dataframe with the images that have the chosen labels
+    df_chosen = df[df[label_key].isin(chosen_labels)]
 
     # move all images that have bad labels to the bad_img_dir
     df_bad = df[~df[label_key].isin(chosen_labels)]
@@ -116,17 +147,18 @@ def prepare_dataframe_and_files_for_training(
             os.path.join(img_dir, file_name), os.path.join(bad_img_dir, file_name)
         )
 
-    # sample num_samples images from each class
-    df_good = sample_classes(df_good, label_key, num_samples, file_name_key, seed)
+    # df_good samples num_samples images from each class
+    df_good = sample_classes(df_chosen,label_key,num_samples,file_name_key,seed)
 
-    # move all images that are not in df_good to the test_img_dir
-    df_test = df[~df[file_name_key].isin(df_good[file_name_key])]
+    # df_test contains the images of df_chosen that were not sampled
+    df_test = df_chosen[~df_chosen[file_name_key].isin(df_good[file_name_key])]
     for file_name in df_test[file_name_key]:
         os.rename(
             os.path.join(img_dir, file_name), os.path.join(test_img_dir, file_name)
         )
 
     return df_good, df_test
+
 
 def labels_for_dataset(df: pd.DataFrame, label_key: str) -> (list, dict):
     """
@@ -153,3 +185,22 @@ def labels_for_dataset(df: pd.DataFrame, label_key: str) -> (list, dict):
     true_label_list = [mapping[value] for value in label_list]
 
     return true_label_list
+
+def reset_images_position(img_dir: str, bad_img_dir: str, test_img_dir: str) -> None:
+    """
+    This function moves all images in bad_img_dir and test_img_dir back to img_dir
+    after checking that directories bad_img_dir and test_img_dir exist.
+
+    Args:
+        img_dir (str): path to the image directory
+        bad_img_dir (str): path to the directory bad images were moved to
+        test_img_dir (str): path to the directory test images were moved to
+    """
+
+    if os.path.exists(test_img_dir):
+        for file in os.listdir(test_img_dir):
+            os.rename(os.path.join(test_img_dir, file), os.path.join(img_dir, file))
+    if os.path.exists(bad_img_dir):
+        for file in os.listdir(bad_img_dir):
+            os.rename(os.path.join(bad_img_dir, file), os.path.join(img_dir, file))
+            
