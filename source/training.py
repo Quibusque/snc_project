@@ -5,14 +5,17 @@ import pandas as pd
 
 import tensorflow as tf
 
+from source.utils import labels_for_dataset
+
 
 def build_dataset(
     img_dir: str,
-    image_size: tuple,
-    true_label_list: list,
+    df_good: pd.DataFrame,
+    label_key: str,
+    validation_split: float = None,
+    image_size: tuple = (256, 256),
     crop_to_aspect_ratio: bool = True,
     batch_size: int = 64,
-    validation_split: float = None,
     shuffle: bool = False,
     seed: int = None,
 ):
@@ -21,6 +24,9 @@ def build_dataset(
         subset = None
     else:
         subset = "both"
+
+    # put labels in the [0,num_classes) range
+    true_label_list = labels_for_dataset(df_good, label_key)
 
     dataset = tf.keras.utils.image_dataset_from_directory(
         directory=img_dir,
@@ -44,7 +50,14 @@ def build_dataset(
     return dataset
 
 
-def build_model(num_classes, input_shape, metric, loss, dropout_rate, print_summary):
+def build_model(
+    num_classes,
+    metric,
+    loss,
+    dropout_rate,
+    input_shape=(256, 256, 3),
+    print_summary=False,
+):
     model = tf.keras.models.Sequential(
         [
             tf.keras.applications.efficientnet_v2.EfficientNetV2B0(
