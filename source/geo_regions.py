@@ -26,7 +26,7 @@ def get_poly_list() -> (list, dict):
                 break
             points.append(row[i].split("|"))
         polygons.append(shapely.Polygon(points))
-    name_dict = {num: acronym for num, acronym in enumerate(regions_df["Acronym"])}
+    name_dict = {num: f"acronym,{num}" for num, acronym in enumerate(regions_df["Acronym"])}
     return (polygons, name_dict)
 
 
