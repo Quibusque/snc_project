@@ -5,45 +5,67 @@ import numpy as np
 import seaborn as sns
 
 
-def accuracy_loss_plot_and_save(history, model_name: str, save_dir: str) -> None:
+def accuracy_loss_plot(
+    history: tf.keras.callbacks.History,
+    model: tf.keras.models.Model,
+    model_name: str,
+    save_dir: str,
+) -> None:
     """
-    This function plots the accuracy and loss for the training and validation
-    sets and saves it to a file as "save_dir/model_name_accuracy_loss.png".
+    This function plots the accuracy and loss for the training and validation and
+    saves it to a file as "save_dir/model_name_accuracy_loss.png".
+    Accuracy and loss can have arbitrary names, but there must be exactly 2.
 
     Args:
-        history: The history object returned by model.fit().
-        model_name: The name of the model (used for the file name).
-        save_dir: The directory to save the plot to.
+        history (tf.keras.callbacks.History): history object returned by model.fit()
+        model (tf.keras.models.Model): model to plot the accuracy and loss for
+        model_name (str): name of the model (used for the file name)
+        save_dir (str): path to the directory to save the accuracy and loss plot
+
+    Raises:
+        ValueError: if there are not exactly 2 metrics
     """
-    acc = history.history["accuracy"]
-    val_acc = history.history["val_accuracy"]
 
-    loss = history.history["loss"]
-    val_loss = history.history["val_loss"]
+    metrics_list = model.metrics_names
+    num_metrics = len(metrics_list)
+    if num_metrics != 2:
+        raise ValueError("save_accuracy_loss requires exactly 2 metrics")
 
-    epochs_range = range(len(acc))
+    metric_1, metric_2 = metrics_list
+
+    training_values_1 = history.history[metric_1]
+    validation_values_1 = history.history["val_" + metric_1]
+    training_values_2 = history.history[metric_2]
+    validation_values_2 = history.history["val_" + metric_2]
+
+    epochs_range = range(len(training_values_1))
 
     plt.figure(figsize=(8, 8))
     plt.subplot(1, 2, 1)
-    plt.plot(epochs_range, acc, label="Training Accuracy")
-    plt.plot(epochs_range, val_acc, label="Validation Accuracy")
+    plt.plot(epochs_range, training_values_1, label=f"Training {metric_1}")
+    plt.plot(epochs_range, validation_values_1, label=f"Validation {metric_1}")
     plt.legend(loc="lower right")
-    plt.title("Training and Validation Accuracy")
+    plt.title(f"Training and Validation {metric_1}")
 
     plt.subplot(1, 2, 2)
-    plt.plot(epochs_range, loss, label="Training Loss")
-    plt.plot(epochs_range, val_loss, label="Validation Loss")
+    plt.plot(epochs_range, training_values_2, label=f"Training {metric_2}")
+    plt.plot(epochs_range, validation_values_2, label=f"Validation {metric_2}")
     plt.legend(loc="upper right")
-    plt.title("Training and Validation Loss")
+    plt.title(f"Training and Validation {metric_2}")
+
     plt.show()
 
-    plt.savefig(os.path.join(save_dir, model_name + "_accuracy_loss.png"))
-    plt.close()
+    if save_dir is not None:
+        if not os.path.exists(save_dir):
+            os.makedirs(save_dir)
+        plt.savefig(os.path.join(save_dir, model_name + "_accuracy_loss.png"))
 
-def confusion_matrix_plot_and_save(
+
+def confusion_matrix_plot(
     matrix: np.ndarray,
     normalization: str,
-    class_names: list[str],
+    name_dict: dict,
+    chosen_labels: list,
     model_name: str,
     save_dir: str,
 ) -> None:
@@ -59,9 +81,10 @@ def confusion_matrix_plot_and_save(
     Args:
         matrix (np.ndarray): confusion matrix
         normalization (str): type of normalization
-        class_names (list[str]): list of class names to label the axes
+        name_dict (dict): dictionary mapping class index to class name
+        chosen_labels (list): list of labels that were used for training
         model_name (str): name of the model (used for the file name)
-        save_dir (str): path to the directory to save the confusion matrix
+        save_dir (str): path to the directory to save the confusion matrix plot
     """
     # check for valid normalization
     if normalization not in ["row", "col", "max", None]:
@@ -74,6 +97,9 @@ def confusion_matrix_plot_and_save(
         matrix = matrix / matrix.sum(axis=0, keepdims=True)
     elif normalization == "max":
         matrix = matrix / matrix.max()
+
+    # generate class_names list
+    class_names = [name_dict[label] for label in chosen_labels]
 
     sns.heatmap(
         matrix,
