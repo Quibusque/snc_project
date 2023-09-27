@@ -58,7 +58,7 @@ def delete_wrong_files(df: pd.DataFrame, img_dir: str, file_name_key: str) -> No
     for file_name in extra_files:
         os.remove(os.path.join(img_dir, file_name))
 
-def sample_classes(
+def sample_labels(
     df: pd.DataFrame, label_key: str, num_samples: int, file_name_key: str, seed: int
 ) -> pd.DataFrame:
     """
@@ -148,7 +148,7 @@ def prepare_dataframe_and_files_for_training(
         )
 
     # df_good samples num_samples images from each class
-    df_good = sample_classes(df_chosen,label_key,num_samples,file_name_key,seed)
+    df_good = sample_labels(df_chosen,label_key,num_samples,file_name_key,seed)
 
     # df_test contains the images of df_chosen that were not sampled
     df_test = df_chosen[~df_chosen[file_name_key].isin(df_good[file_name_key])]
@@ -160,7 +160,7 @@ def prepare_dataframe_and_files_for_training(
     return df_good, df_test
 
 
-def labels_for_dataset(df: pd.DataFrame, label_key: str) -> (list, dict):
+def labels_for_dataset(df: pd.DataFrame, label_key: str) -> list:
     """
     This function converts the int labels in the dataframe to a list of ints
     in the range [0,num_classes) and returns the list
