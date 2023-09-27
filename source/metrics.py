@@ -2,28 +2,50 @@ import numpy as np
 import os
 import tensorflow as tf
 
-def save_accuracy_loss(history, model_name: str, save_dir: str):
+
+def save_accuracy_loss(
+    history: tf.keras.callbacks.History,
+    model: tf.keras.models.Model,
+    model_name: str,
+    save_dir: str,
+) -> None:
     """
-    This function saves the accuracy and loss for the training and validation to
-    a csv file as "save_dir/model_name_accuracy_loss.csv".
+    This function saves the accuracy and loss for the training and validation to a
+    csv file as "save_dir/model_name_accuracy_loss.csv".
+    Accuracy and loss can have arbitrary names, but there must be exactly 2.
 
     Args:
-        history: The history object returned by model.fit().
-        model_name: The name of the model (used for the file name).
-        save_dir: The directory to save the csv file to.
+        history (tf.keras.callbacks.History): history object returned by model.fit()
+        model (tf.keras.models.Model): model to plot the accuracy and loss for
+        model_name (str): name of the model (used for the file name)
+        save_dir (str): path to the directory to save the accuracy and loss plot
+
+    Raises:
+        ValueError: if there are not exactly 2 metrics
     """
-    acc = history.history["accuracy"]
-    val_acc = history.history["val_accuracy"]
+    metrics_list = model.metrics_names
+    num_metrics = len(metrics_list)
+    if num_metrics != 2:
+        raise ValueError("save_accuracy_loss requires exactly 2 metrics")
 
-    loss = history.history["loss"]
-    val_loss = history.history["val_loss"]
+    metric_1, metric_2 = metrics_list
+    val_metric_1, val_metric_2 = "val_" + metric_1, "val_" + metric_2
 
-    epochs = len(acc)
+    training_values_1 = history.history[metric_1]
+    validation_values_1 = history.history[val_metric_1]
+    training_values_2 = history.history[metric_2]
+    validation_values_2 = history.history[val_metric_2]
 
+    epochs = len(training_values_1)
+
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
     with open(os.path.join(save_dir, model_name + "_accuracy_loss.csv"), "w") as f:
-        f.write("epoch,acc,val_acc,loss,val_loss\n")
+        f.write(f"epoch,{metric_1},{val_metric_1},{metric_2},{val_metric_2}\n")
         for i in range(epochs):
-            f.write(f"{i},{acc[i]},{val_acc[i]},{loss[i]},{val_loss[i]}\n")
+            f.write(
+                f"{i},{training_values_1[i]},{validation_values_1[i]},{training_values_2[i]},{validation_values_2[i]}\n"
+            )
 
 
 def confusion_matrix(
@@ -65,9 +87,7 @@ def confusion_matrix(
     return matrix
 
 
-def class_metrics_compute_and_save_(
-    matrix: np.ndarray, save_dir: str, model_name: str
-) -> None:
+def save_class_metrics(matrix: np.ndarray, save_dir: str, model_name: str) -> None:
     """
     This function computes the precision, recall and f1 score for each class
     based on the confusion matrix and saves them to a csv file in the path
@@ -79,6 +99,8 @@ def class_metrics_compute_and_save_(
         model_name: The name of the model (for the file name).
     """
     num_classes = matrix.shape[0]
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
     with open(
         os.path.join(save_dir, model_name + "_precision_recall_f1.csv"), "w"
     ) as f:
