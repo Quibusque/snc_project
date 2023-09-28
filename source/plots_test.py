@@ -2,6 +2,7 @@ import os
 import tensorflow as tf
 import numpy as np
 import pytest
+
 from .plots import accuracy_loss_plot, confusion_matrix_plot
 
 
@@ -59,6 +60,7 @@ def test_confusion_matrix_plot(tmpdir):
             matrix, normalization, name_dict, chosen_labels, model_name, save_dir=None
         )
     # this is with saving
+
     confusion_matrix_plot(matrix, "row", name_dict, chosen_labels, model_name, out_dir)
 
     # check that out_dir is created
@@ -66,8 +68,9 @@ def test_confusion_matrix_plot(tmpdir):
     # check that the plot is saved
     assert os.path.exists(os.path.join(out_dir, "test_model_confusion_matrix.png"))
 
-    # check that we raise an error if we call with wrong normalization string
+
+    #check that we raise an error if we call with wrong normalization string
     with pytest.raises(ValueError):
-        confusion_matrix_plot(
-            matrix, "any", name_dict, chosen_labels, model_name, out_dir
-        )
+        confusion_matrix_plot(matrix, "any", name_dict, chosen_labels, model_name, out_dir)
+
+    

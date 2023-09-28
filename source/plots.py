@@ -53,7 +53,6 @@ def accuracy_loss_plot(
     plt.legend(loc="upper right")
     plt.title(f"Training and Validation {metric_2}")
 
-    plt.show()
 
     if save_dir is not None:
         if not os.path.exists(save_dir):
@@ -114,5 +113,6 @@ def confusion_matrix_plot(
     plt.title("Confusion Matrix")
 
     if save_dir is not None:
+        if not os.path.exists(save_dir):
+            os.makedirs(save_dir)
         plt.savefig(os.path.join(save_dir, model_name + "_confusion_matrix.png"))
-    plt.show()
