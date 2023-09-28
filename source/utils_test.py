@@ -54,28 +54,26 @@ def sample_dataframe():
 
 
 def test_remove_wrong_entries(sample_dataframe, temp_img_dir):
-    file_name_key = "file_name"
     # add a wrong entry to the dataframe with concat
     wrong_entry = pd.DataFrame({"file_name": ["image4.jpeg"]})
     sample_dataframe = pd.concat([sample_dataframe, wrong_entry], ignore_index=True)
 
-    result_df = remove_wrong_entries(sample_dataframe, temp_img_dir, file_name_key)
+    result_df = remove_wrong_entries(sample_dataframe, temp_img_dir)
 
     # Check that the wrong entry is removed
-    assert "image4.jpeg" not in result_df[file_name_key].tolist()
+    assert "image4.jpeg" not in result_df["file_name"].tolist()
 
     # Check that the correct entries are still present
     original_entries = ["image1.jpeg", "image2.jpeg", "image3.jpeg"]
-    assert set(original_entries) == set(result_df[file_name_key].tolist())
+    assert set(original_entries) == set(result_df["file_name"].tolist())
 
 
 def test_delete_wrong_files(sample_dataframe, temp_img_dir):
-    file_name_key = "file_name"
     # add a wrong file to the directory
     with open(os.path.join(temp_img_dir, "image4.jpeg"), "w") as f:
         f.write("sample content")
 
-    delete_wrong_files(sample_dataframe, temp_img_dir, file_name_key)
+    delete_wrong_files(sample_dataframe, temp_img_dir)
 
     # Check that the wrong file is deleted
     assert "image4.jpeg" not in os.listdir(temp_img_dir)
@@ -97,47 +95,35 @@ def big_sample_dataframe():
 
 
 def test_sample_labels_big(big_sample_dataframe):
-    label_key = "label"
     # num_samples < 100 to test that entries are removed
     num_samples = 34
-    file_name_key = "file_name"
     seed = 0
 
-    result_df = sample_labels(
-        big_sample_dataframe, label_key, num_samples, file_name_key, seed
-    )
+    result_df = sample_labels(big_sample_dataframe, num_samples, seed)
 
     # Check that the result_df has the correct number of entries
     assert len(result_df) == num_samples * 10
 
     # Check that the result_df has the correct number of entries for each label
-    assert result_df.groupby(label_key).size().tolist() == [num_samples] * 10
+    assert result_df.groupby("label").size().tolist() == [num_samples] * 10
 
-    # Check that the dataframe is sorted by file_name_key
-    assert result_df[file_name_key].tolist() == sorted(
-        result_df[file_name_key].tolist()
-    )
+    # Check that the dataframe is sorted by "file_name"
+    assert result_df["file_name"].tolist() == sorted(result_df["file_name"].tolist())
 
 
 def test_sample_labels_small(big_sample_dataframe):
-    label_key = "label"
     # num_samples > 100 to test that entries are not removed
     num_samples = 150
-    file_name_key = "file_name"
     seed = 0
 
-    result_df = sample_labels(
-        big_sample_dataframe, label_key, num_samples, file_name_key, seed
-    )
+    result_df = sample_labels(big_sample_dataframe, num_samples, seed)
 
-    # Check that the dataframe is sorted by file_name_key
-    assert result_df[file_name_key].tolist() == sorted(
-        result_df[file_name_key].tolist()
-    )
+    # Check that the dataframe is sorted by "file_name"
+    assert result_df["file_name"].tolist() == sorted(result_df["file_name"].tolist())
 
     # check that result_df is the same as big_sample_dataframe (after sorting it)
     assert result_df.equals(
-        big_sample_dataframe.sort_values(by=[file_name_key]).reset_index(drop=True)
+        big_sample_dataframe.sort_values(by=["file_name"]).reset_index(drop=True)
     )
 
 
@@ -156,9 +142,7 @@ def sample_img_dir(tmpdir):
 def test_prepare_dataframe_and_files_for_training(
     big_sample_dataframe, sample_img_dir, tmpdir
 ):
-    label_key = "label"
     num_samples = 42
-    file_name_key = "file_name"
     seed = 0
     chosen_labels = [0, 1, 2, 3, 4]
 
@@ -169,8 +153,6 @@ def test_prepare_dataframe_and_files_for_training(
     df_good, df_test = prepare_dataframe_and_files_for_training(
         big_sample_dataframe,
         chosen_labels,
-        file_name_key,
-        label_key,
         img_dir,
         bad_img_dir,
         test_img_dir,
@@ -179,23 +161,23 @@ def test_prepare_dataframe_and_files_for_training(
     )
 
     # check that all the images in df_bad are in bad_img_dir
-    df_bad = big_sample_dataframe[~big_sample_dataframe[label_key].isin(chosen_labels)]
-    assert set(df_bad[file_name_key].tolist()).issubset(set(os.listdir(bad_img_dir)))
+    df_bad = big_sample_dataframe[~big_sample_dataframe["label"].isin(chosen_labels)]
+    assert set(df_bad["file_name"].tolist()).issubset(set(os.listdir(bad_img_dir)))
 
     # check that the df_good has the correct number of entries
     assert len(df_good) == num_samples * len(chosen_labels)
     # check that all the labels in df_good are in chosen_labels
-    assert set(df_good[label_key].tolist()).issubset(set(chosen_labels))
+    assert set(df_good["label"].tolist()).issubset(set(chosen_labels))
     # Check that images in df_good are all in img_dir
-    assert set(df_good[file_name_key].tolist()).issubset(set(os.listdir(img_dir)))
+    assert set(df_good["file_name"].tolist()).issubset(set(os.listdir(img_dir)))
 
     # Check that number of total entries is preserved
     assert len(df_good) + len(df_bad) + len(df_test) == len(big_sample_dataframe)
 
     # check that all the labels in df_test are in chosen_labels
-    assert set(df_test[label_key].tolist()).issubset(set(chosen_labels))
+    assert set(df_test["label"].tolist()).issubset(set(chosen_labels))
     # Check that images in df_test are all in test_img_dir
-    assert set(df_test[file_name_key].tolist()).issubset(set(os.listdir(test_img_dir)))
+    assert set(df_test["file_name"].tolist()).issubset(set(os.listdir(test_img_dir)))
 
     # test that we raise an error if we run this function on non-empty
     # bad_img_dir or test_img_dir
@@ -207,8 +189,6 @@ def test_prepare_dataframe_and_files_for_training(
         prepare_dataframe_and_files_for_training(
             big_sample_dataframe,
             chosen_labels,
-            file_name_key,
-            label_key,
             img_dir,
             empty_dir,
             test_img_dir,
@@ -219,8 +199,6 @@ def test_prepare_dataframe_and_files_for_training(
         prepare_dataframe_and_files_for_training(
             big_sample_dataframe,
             chosen_labels,
-            file_name_key,
-            label_key,
             img_dir,
             bad_img_dir,
             empty_dir,
@@ -275,7 +253,6 @@ def dataframe_with_wrong_range_labels():
 
 
 def test_labels_for_dataset(dataframe_with_wrong_range_labels):
-    label_key = "label"
-    labels = labels_for_dataset(dataframe_with_wrong_range_labels, label_key)
+    labels = labels_for_dataset(dataframe_with_wrong_range_labels)
     # labels should now be in range(0,10)
     assert set(labels) == set(range(0, 10))

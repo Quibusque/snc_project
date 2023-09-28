@@ -11,13 +11,13 @@ from source.utils import labels_for_dataset
 def build_dataset(
     img_dir: str,
     df_good: pd.DataFrame,
-    label_key: str,
     shuffle: bool,
     seed: int,
     validation_split: float = None,
     image_size: tuple = (256, 256),
     crop_to_aspect_ratio: bool = True,
     batch_size: int = 64,
+    label_key: str = "label",
 ) -> tf.data.Dataset:
     """
     This function builds a tf dataset from a directory of images and a dataframe
@@ -28,7 +28,6 @@ def build_dataset(
     Args:
         img_dir (str): path to image directory
         df_good (pd.DataFrame): dataframe with image file names and labels
-        label_key (str): name of the column containing the labels
         shuffle (bool): whether to shuffle the dataset
         seed (int): seed for shuffling
         validation_split (float): fraction of the dataset to use for
@@ -37,6 +36,7 @@ def build_dataset(
         crop_to_aspect_ratio (bool): whether to crop the images to the aspect
             ratio of image_size. Defaults to True.
         batch_size (int): batch size. Defaults to 64.
+        label_key (str): name of the column containing the labels. Defaults to "label".
 
     Returns:
         if validation_split is None:
@@ -82,8 +82,8 @@ def build_model(
     loss: tf.keras.losses.Loss,
     dropout_rate: float = 0.2,
     input_shape: tuple = (256, 256, 3),
-    print_summary: bool = True
-)-> tf.keras.models.Model:
+    print_summary: bool = True,
+) -> tf.keras.models.Model:
     """
     This function builds a model with the EfficientNetV2B0 network as the base
     and a dense layer with softmax activation as the head. The model is compiled
@@ -136,12 +136,12 @@ def train_model(
     patience=3,
     save_weights_only=True,
     save_best_only=True,
-)->tf.keras.callbacks.History:
+) -> tf.keras.callbacks.History:
     """
     This function trains a model on the training data and evaluates it on the
     validation data. Early stopping is used to stop training if the validation
     loss does not improve for patience epochs. The model weights are saved to
-    "checkpoint_dir/model_name" after each epoch. 
+    "checkpoint_dir/model_name" after each epoch.
 
     Args:
         model (tf.keras.models.Model): model to train

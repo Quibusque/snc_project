@@ -40,7 +40,6 @@ def test_build_dataset(sample_df, sample_img_dir):
     tra_ds, val_ds = build_dataset(
         img_dir,
         df_good,
-        "label",
         True,
         seed,
         validation_split=0.2,
@@ -61,7 +60,6 @@ def test_build_dataset(sample_df, sample_img_dir):
     dataset = build_dataset(
         img_dir,
         df_good,
-        "label",
         True,
         seed=None,
         validation_split=None,
@@ -85,7 +83,6 @@ def sample_ds(sample_df, sample_img_dir):
     tra_ds, val_ds = build_dataset(
         img_dir,
         df_good,
-        "label",
         True,
         seed,
         validation_split=0.2,
@@ -95,7 +92,7 @@ def sample_ds(sample_df, sample_img_dir):
     return tra_ds, val_ds
 
 
-def test_build_model(sample_ds,capfd):
+def test_build_model(sample_ds, capfd):
     metric = tf.keras.metrics.SparseCategoricalAccuracy(name="accuracy")
     loss = tf.keras.losses.SparseCategoricalCrossentropy()
 
@@ -104,9 +101,8 @@ def test_build_model(sample_ds,capfd):
 
     # #check that summary was printed
     out, err = capfd.readouterr()
-    #Model: "sequential"
-    assert "Model: \"sequential\"" in out
-
+    # Model: "sequential"
+    assert 'Model: "sequential"' in out
 
     # check that the model has the correct number of layers
     assert len(model.layers) == 3
@@ -119,6 +115,7 @@ def test_build_model(sample_ds,capfd):
     # check the models metrics
     assert model.metrics_names == ["loss", "accuracy"]
 
+
 def test_train_model(sample_ds, tmpdir):
     # set up the model
     metric = tf.keras.metrics.SparseCategoricalAccuracy(name="accuracy")
@@ -126,7 +123,7 @@ def test_train_model(sample_ds, tmpdir):
 
     num_classes = 3
 
-    #create a simple CNN model
+    # create a simple CNN model
     model = tf.keras.Sequential(
         [
             tf.keras.layers.Conv2D(
@@ -140,19 +137,21 @@ def test_train_model(sample_ds, tmpdir):
     )
 
     # compile the model
-    model.compile(
-        optimizer="adam", loss=loss, metrics=[metric]
-    )
+    model.compile(optimizer="adam", loss=loss, metrics=[metric])
 
     # train the model
     tra_ds, val_ds = sample_ds
     checkpoint_dir = tmpdir.mkdir("checkpoints")
     train_model(
-        model,tra_ds,val_ds,epochs=3,model_name="test_model",checkpoint_dir=checkpoint_dir,
-        patience=4
+        model,
+        tra_ds,
+        val_ds,
+        epochs=3,
+        model_name="test_model",
+        checkpoint_dir=checkpoint_dir,
+        save_best_only=False,
+        patience=4,
     )
 
-    #check that there are 3 checkpoints in checkpoint_dir/model_name
+    # check that there are 3 checkpoints in checkpoint_dir/model_name
     assert len(os.listdir(checkpoint_dir.join("test_model"))) == 3
-
-
