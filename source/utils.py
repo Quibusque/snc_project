@@ -1,6 +1,8 @@
 import pandas as pd
 import os
 
+from .geo_regions import get_poly_list, get_point_region
+
 
 def format_id_to_filename(
     df: pd.DataFrame, file_name_key: str = "file_name"
@@ -219,3 +221,52 @@ def reset_images_position(img_dir: str, bad_img_dir: str, test_img_dir: str) -> 
     if os.path.exists(bad_img_dir):
         for file in os.listdir(bad_img_dir):
             os.rename(os.path.join(bad_img_dir, file), os.path.join(img_dir, file))
+
+
+def make_labelled_dataframe(
+    csv_path: str,
+    img_dir: str,
+    label_key: str = "label",
+    file_name_key: str = "file_name",
+):
+    """
+    This function takes the csv file with the list of images in the img_dir and
+    the coordinates of the images and returns a dataframe with the labels for each image.
+
+    The input csv must have a specific format where the "id" column contains the file names
+    without the ".jpeg" extension. The lng and lat columns contain the longitude and
+    latitude coordinates of the images.
+    The dataframe is "sanitized" because images in the img_dir that are not in the csv
+    are deleted and images in the csv that are not in the img_dir are deleted.
+    The regions to label the images are computed using the geo_regions module.
+    In the output dataframe, the "id" column is renamed to file_name_key where filenames
+    have the ".jpeg" extension appended to them. The label for each image is stored in
+    a new column with the name label_key.
+    name_dict is a dictionary mapping region numbers to region acronyms (see geo_regions.py)
+
+    Args:
+        csv_path (str): path to the csv file
+        img_dir (str): path to the image directory
+        label_key (str): name of the column containing the labels. Defaults to "label".
+        file_name_key (str): name of the column containing the file names. Defaults to "file_name".
+
+    Returns:
+        df (pd.DataFrame): dataframe with the labels
+        name_dict (dict): dictionary mapping region names to region labels
+    """
+    # create a dataframe with the labels
+    df = pd.read_csv(csv_path)
+    df = format_id_to_filename(df, file_name_key)
+
+    # delete entries in the dataframe that are not in the images folder
+    df = remove_wrong_entries(df, img_dir, file_name_key)
+
+    # delete images in the images folder that are not in the dataframe
+    delete_wrong_files(df, img_dir, file_name_key)
+
+    polygons, name_dict = get_poly_list()
+    print(f"Computing region label for images, this may take a while...")
+    df[label_key] = df.apply(lambda x: get_point_region(x.lng, x.lat, polygons), axis=1)
+    print(f"Done!")
+
+    return df, name_dict

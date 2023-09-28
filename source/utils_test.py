@@ -6,6 +6,7 @@ from .utils import (
     prepare_dataframe_and_files_for_training,
     reset_images_position,
     labels_for_dataset,
+    make_labelled_dataframe
 )
 import pytest
 import pandas as pd
@@ -256,3 +257,35 @@ def test_labels_for_dataset(dataframe_with_wrong_range_labels):
     labels = labels_for_dataset(dataframe_with_wrong_range_labels)
     # labels should now be in range(0,10)
     assert set(labels) == set(range(0, 10))
+
+
+def test_make_labelled_dataframe(tmpdir, capfd):
+    # make a dummy csv file
+    csv_path = os.path.join(str(tmpdir), "dummy.csv")
+    # csv should have a lng,lat,id columns
+    data = {
+        "lng": [1, 2, 3],
+        "lat": [1, 2, 3],
+        "id": ["image1", "image2", "image3"],
+    }
+    pd.DataFrame(data).to_csv(csv_path, index=False)
+    # make a dummy image directory
+    img_dir = os.path.join(str(tmpdir), "images")
+    os.makedirs(img_dir)
+    # fill it with some images
+    for file in ["image1.jpeg", "image2.jpeg", "image4.jpeg"]:
+        with open(os.path.join(img_dir, file), "w") as f:
+            f.write("sample content")
+
+    df, name_dict = make_labelled_dataframe(csv_path, img_dir)
+    # check that the dataframe has the correct entries
+    assert df["file_name"].tolist() == ["image1.jpeg", "image2.jpeg"]
+    # check that the dataframe has the correct columns
+    assert set(df.columns) == set(["lng", "lat", "file_name", "label"])
+    # check that image4.jpeg has been removed from files
+    assert "image4.jpeg" not in os.listdir(img_dir)
+
+    out, err = capfd.readouterr()
+    # check that the function prints the correct message
+    assert "Computing region label for images, this may take a while..." in out
+    assert "Done!" in out
