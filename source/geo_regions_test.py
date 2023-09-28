@@ -1,8 +1,7 @@
 import shapely
-from geo_regions import get_poly_list, get_point_region
+from .geo_regions import get_poly_list, get_point_region
 
 
-# test get_poly_list
 def test_get_poly_list():
     polygons, name_dict = get_poly_list()
     assert len(polygons) == 62
@@ -129,7 +128,6 @@ def point_list():
     return point_list
 
 
-# test get_point_region
 def test_get_point_region():
     result_list = []
     default = 99

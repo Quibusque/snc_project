@@ -1,7 +1,16 @@
-from utils import *
+from .utils import (
+    format_id_to_filename,
+    remove_wrong_entries,
+    delete_wrong_files,
+    sample_labels,
+    prepare_dataframe_and_files_for_training,
+    reset_images_position,
+    labels_for_dataset,
+)
 import pytest
 import pandas as pd
 import os
+
 
 # Sample unfomatted test data
 @pytest.fixture
@@ -10,7 +19,6 @@ def sample_unformatted_dataframe():
     return pd.DataFrame(data)
 
 
-# test the format_id_to_filename function
 def test_format_id_to_filename(sample_unformatted_dataframe):
     file_name_key = "file_name"
     result_df = format_id_to_filename(sample_unformatted_dataframe, file_name_key)
@@ -45,7 +53,6 @@ def sample_dataframe():
     return pd.DataFrame(data)
 
 
-# test remove_wrong_entries
 def test_remove_wrong_entries(sample_dataframe, temp_img_dir):
     file_name_key = "file_name"
     # add a wrong entry to the dataframe with concat
@@ -133,6 +140,7 @@ def test_sample_labels_small(big_sample_dataframe):
         big_sample_dataframe.sort_values(by=[file_name_key]).reset_index(drop=True)
     )
 
+
 @pytest.fixture
 def sample_img_dir(tmpdir):
     img_dir = str(tmpdir)
@@ -143,6 +151,7 @@ def sample_img_dir(tmpdir):
             f.write("sample content")
 
     return img_dir
+
 
 def test_prepare_dataframe_and_files_for_training(
     big_sample_dataframe, sample_img_dir, tmpdir
@@ -169,30 +178,29 @@ def test_prepare_dataframe_and_files_for_training(
         seed,
     )
 
-    #check that all the images in df_bad are in bad_img_dir
+    # check that all the images in df_bad are in bad_img_dir
     df_bad = big_sample_dataframe[~big_sample_dataframe[label_key].isin(chosen_labels)]
     assert set(df_bad[file_name_key].tolist()).issubset(set(os.listdir(bad_img_dir)))
 
-
-    #check that the df_good has the correct number of entries
+    # check that the df_good has the correct number of entries
     assert len(df_good) == num_samples * len(chosen_labels)
-    #check that all the labels in df_good are in chosen_labels
+    # check that all the labels in df_good are in chosen_labels
     assert set(df_good[label_key].tolist()).issubset(set(chosen_labels))
-    #Check that images in df_good are all in img_dir
+    # Check that images in df_good are all in img_dir
     assert set(df_good[file_name_key].tolist()).issubset(set(os.listdir(img_dir)))
 
-    #Check that number of total entries is preserved
+    # Check that number of total entries is preserved
     assert len(df_good) + len(df_bad) + len(df_test) == len(big_sample_dataframe)
 
     # check that all the labels in df_test are in chosen_labels
     assert set(df_test[label_key].tolist()).issubset(set(chosen_labels))
-    #Check that images in df_test are all in test_img_dir
+    # Check that images in df_test are all in test_img_dir
     assert set(df_test[file_name_key].tolist()).issubset(set(os.listdir(test_img_dir)))
 
-    #test that we raise an error if we run this function on non-empty
-    #bad_img_dir or test_img_dir
+    # test that we raise an error if we run this function on non-empty
+    # bad_img_dir or test_img_dir
 
-    #make an empty dir
+    # make an empty dir
     os.makedirs(empty_dir := os.path.join(str(tmpdir), "empty_dir"))
 
     with pytest.raises(ValueError):
@@ -226,50 +234,48 @@ def test_reset_images_position(sample_img_dir, tmpdir):
     bad_img_dir = os.path.join(str(tmpdir), "bad_img_dir")
     test_img_dir = os.path.join(str(tmpdir), "test_img_dir")
 
-    #create the bad_img_dir and test_img_dir if they don't exist
+    # create the bad_img_dir and test_img_dir if they don't exist
     if not os.path.exists(bad_img_dir):
         os.makedirs(bad_img_dir)
     if not os.path.exists(test_img_dir):
         os.makedirs(test_img_dir)
 
-    #add 20 images to bad_img_dir and 20 images to test_img_dir
-    for i in range(0,20):
+    # add 20 images to bad_img_dir and 20 images to test_img_dir
+    for i in range(0, 20):
         with open(os.path.join(bad_img_dir, f"bad_image{i}.jpeg"), "w") as f:
             f.write("sample content")
         with open(os.path.join(test_img_dir, f"test_image{i}.jpeg"), "w") as f:
             f.write("sample content")
-    
-    #check that bad_img_dir and test_img_dir have 20 images each
+
+    # check that bad_img_dir and test_img_dir have 20 images each
     assert len(os.listdir(bad_img_dir)) == 20
     assert len(os.listdir(test_img_dir)) == 20
 
-
-    #save the original number of images in img_dir
+    # save the original number of images in img_dir
     original_num_images = len(os.listdir(img_dir))
 
     reset_images_position(img_dir, bad_img_dir, test_img_dir)
 
-    #check that bad_img_dir and test_img_dir are empty
+    # check that bad_img_dir and test_img_dir are empty
     assert len(os.listdir(bad_img_dir)) == 0
     assert len(os.listdir(test_img_dir)) == 0
 
-    #check that img_dir size is 40 longer
+    # check that img_dir size is 40 longer
     assert len(os.listdir(img_dir)) == original_num_images + 40
-
-
 
 
 @pytest.fixture
 def dataframe_with_wrong_range_labels():
     data = {"file_name": [f"image{i}.jpeg" for i in range(0, 1000)]}
-    #labels in range(10,20) instead of range(0,10)
+    # labels in range(10,20) instead of range(0,10)
     data["label"] = [i for i in range(10, 20)] * 100
     dataframe = pd.DataFrame(data)
     dataframe = dataframe.sample(frac=1).reset_index(drop=True)
     return dataframe
 
+
 def test_labels_for_dataset(dataframe_with_wrong_range_labels):
     label_key = "label"
-    labels = labels_for_dataset(dataframe_with_wrong_range_labels,label_key)
-    #labels should now be in range(0,10)
-    assert set(labels) == set(range(0,10))
+    labels = labels_for_dataset(dataframe_with_wrong_range_labels, label_key)
+    # labels should now be in range(0,10)
+    assert set(labels) == set(range(0, 10))
