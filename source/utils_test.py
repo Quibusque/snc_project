@@ -6,21 +6,16 @@ from .utils import (
     prepare_dataframe_and_files_for_training,
     reset_images_position,
     labels_for_dataset,
-    make_labelled_dataframe
+    map_labels_to_range,
+    make_labelled_dataframe,
 )
 import pytest
 import pandas as pd
 import os
 
 
-# Sample unfomatted test data
-@pytest.fixture
-def sample_unformatted_dataframe():
-    data = {"id": ["image1", "image2", "image3"]}
-    return pd.DataFrame(data)
-
-
-def test_format_id_to_filename(sample_unformatted_dataframe):
+def test_format_id_to_filename():
+    sample_unformatted_dataframe = pd.DataFrame({"id": ["image1", "image2", "image3"]})
     file_name_key = "file_name"
     result_df = format_id_to_filename(sample_unformatted_dataframe, file_name_key)
 
@@ -243,20 +238,28 @@ def test_reset_images_position(sample_img_dir, tmpdir):
     assert len(os.listdir(img_dir)) == original_num_images + 40
 
 
-@pytest.fixture
-def dataframe_with_wrong_range_labels():
-    data = {"file_name": [f"image{i}.jpeg" for i in range(0, 1000)]}
-    # labels in range(10,20) instead of range(0,10)
-    data["label"] = [i for i in range(10, 20)] * 100
-    dataframe = pd.DataFrame(data)
-    dataframe = dataframe.sample(frac=1).reset_index(drop=True)
-    return dataframe
+def test_labels_for_dataset():
+    # make a dummy dataframe
+    data = {"label": [0, 1, 2], "id": ["image1", "image2", "image3"]}
+    df = pd.DataFrame(data)
+    # make a dummy label map
+    label_map = {0: "label_0", 1: "label_1", 2: "label_2"}
+    # check that the function works
+    assert labels_for_dataset(df, label_map, "label") == [
+        "label_0",
+        "label_1",
+        "label_2",
+    ]
 
+def test_map_labels_to_range():
+    # make a dummy dataframe
+    data = {"label": [10, 21, 33], "id": ["image1", "image2", "image3"]}
+    df = pd.DataFrame(data)
+    # check that the map goes to 0,1,2
+    map = map_labels_to_range(df,3,"label")
+    assert map == {10:0,21:1,33:2}
+    
 
-def test_labels_for_dataset(dataframe_with_wrong_range_labels):
-    labels = labels_for_dataset(dataframe_with_wrong_range_labels)
-    # labels should now be in range(0,10)
-    assert set(labels) == set(range(0, 10))
 
 
 def test_make_labelled_dataframe(tmpdir, capfd):

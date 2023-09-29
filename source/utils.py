@@ -174,34 +174,49 @@ def prepare_dataframe_and_files_for_training(
             os.path.join(img_dir, file_name), os.path.join(test_img_dir, file_name)
         )
 
+    # sort the dataframes by alphabetical order of file_name_key
+    df_good = df_good.sort_values(by=file_name_key).reset_index(drop=True)
+    df_test = df_test.sort_values(by=file_name_key).reset_index(drop=True)
+
     return df_good, df_test
 
 
-def labels_for_dataset(df: pd.DataFrame, label_key: str = "label") -> list:
+def labels_for_dataset(df: pd.DataFrame, map: dict, label_key: str = "label") -> list:
     """
-    This function converts the int labels in the dataframe to a list of ints
-    in the range [0,num_classes) and returns the list
-
-    This is necessary because tf datasets with int labels require
-    the labels to be in the range [0,num_classes).
-
-    Args:
-        df (pd.DataFrame): dataframe with the labels
-        label_key (str): name of the column containing the labels. Defaults to "label".
-    Returns:
-        true_label_list (list): list of labels in the range [0,num_classes)
+    This function returns a list of labels for a given dataframe, where the labels
+    are mapped according to the dictionary map.
     """
     # list of labels
     label_list = df[label_key].tolist()
-    # unique labels, in order of frequency
-    labels = df[label_key].value_counts().keys()
+
+    # true_label_list is the list of labels in the range [0,num_classes)
+    true_label_list = [map[value] for value in label_list]
+
+    return true_label_list
+
+
+def map_labels_to_range(
+    df: pd.DataFrame, num_classes: int, label_key: str = "label"
+) -> dict:
+    """
+    This function takes a dataframe with the labels and returns a dictionary
+    mapping each label to a number in the range [0,num_classes).
+
+    Args:
+        df (pd.DataFrame): dataframe with the labels.
+        num_classes (int): number of classes.
+        label_key (str): name of the column containing the labels. Defaults to "label".
+
+    Returns:
+        mapping (dict): dictionary mapping each label to a number in the range [0,num_classes).
+    """
+    # unique labels in the dataframe
+    labels = df[label_key].unique()
 
     # mapping brings labels to the range [0,num_classes)
     mapping = {num: index for index, num in enumerate(labels)}
-    # true_label_list is the list of labels in the range [0,num_classes)
-    true_label_list = [mapping[value] for value in label_list]
 
-    return true_label_list
+    return mapping
 
 
 def reset_images_position(img_dir: str, bad_img_dir: str, test_img_dir: str) -> None:

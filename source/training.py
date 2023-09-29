@@ -11,6 +11,7 @@ from source.utils import labels_for_dataset
 def build_dataset(
     img_dir: str,
     df_good: pd.DataFrame,
+    label_map: dict,
     shuffle: bool,
     seed: int,
     validation_split: float = None,
@@ -52,7 +53,7 @@ def build_dataset(
         subset = "both"
 
     # put labels in the [0,num_classes) range
-    true_label_list = labels_for_dataset(df_good, label_key)
+    true_label_list = labels_for_dataset(df_good, label_map, label_key)
 
     dataset = tf.keras.utils.image_dataset_from_directory(
         directory=img_dir,

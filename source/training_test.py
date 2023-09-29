@@ -35,11 +35,13 @@ def test_build_dataset(sample_df, sample_img_dir):
 
     img_dir = sample_img_dir
     df_good = sample_df
+    label_map = {1: 0, 2: 1, 3: 2}
 
     # build training and validation datasets with shuffling
     tra_ds, val_ds = build_dataset(
         img_dir,
         df_good,
+        label_map,
         True,
         seed,
         validation_split=0.2,
@@ -56,11 +58,12 @@ def test_build_dataset(sample_df, sample_img_dir):
     for _, label in val_ds:
         assert np.isin(label.numpy(), [0, 1, 2])
 
-    # build a single dataset with no shuffling
+    # build a single dataset with no shuffling and no validation split
     dataset = build_dataset(
         img_dir,
         df_good,
-        True,
+        label_map,
+        False,
         seed=None,
         validation_split=None,
         batch_size=batch_size,
@@ -78,11 +81,13 @@ def sample_ds(sample_df, sample_img_dir):
 
     img_dir = sample_img_dir
     df_good = sample_df
+    label_map = {1: 0, 2: 1, 3: 2}
 
     # build training and validation datasets with shuffling
     tra_ds, val_ds = build_dataset(
         img_dir,
         df_good,
+        label_map,
         True,
         seed,
         validation_split=0.2,
