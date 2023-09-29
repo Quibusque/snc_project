@@ -14,6 +14,7 @@ Usage
 The user can use the interactive_notebook.ipynb to train the model and see its performance on the dataset.
 The dataset is downloaded from kaggle, the user needs to have a kaggle account and provide the username and key in the notebook. 
 The notebook is built assuming to be run on google colab, and it is recommended to run it with a GPU runtime.
+The notebook can be found at the following link: https://colab.research.google.com/drive/1Uo7sVzYFC-i7nlCmu-nu3_JVJr2HdcO8
 
 Running the tests
 --------------
