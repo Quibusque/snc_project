@@ -67,7 +67,7 @@ def confusion_matrix(
     true_classes = np.array([])
 
     print(
-        f"Computing confusion matrix for {len(dataset)} images, this may take a while..."
+        f"Computing confusion matrix for images, this may take a while..."
     )
     for x, y in dataset:
         predicted_classes = np.concatenate(
