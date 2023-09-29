@@ -1,5 +1,5 @@
 import shapely
-from .geo_regions import get_poly_list, get_point_region
+from ..geo_regions import get_poly_list, get_point_region
 
 
 def test_get_poly_list():

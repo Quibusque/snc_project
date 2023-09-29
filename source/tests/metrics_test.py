@@ -3,7 +3,7 @@ import pytest
 import tensorflow as tf
 import os
 import numpy as np
-from .metrics import confusion_matrix, save_class_metrics, save_accuracy_loss
+from ..metrics import confusion_matrix, save_class_metrics, save_accuracy_loss
 import tensorflow as tf
 def test_save_accuracy_loss(tmpdir):
     # Create dummy history data

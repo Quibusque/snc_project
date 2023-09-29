@@ -3,7 +3,7 @@ import tensorflow as tf
 import numpy as np
 import pytest
 
-from .plots import accuracy_loss_plot, confusion_matrix_plot
+from ..plots import accuracy_loss_plot, confusion_matrix_plot
 
 
 def test_accuracy_loss_plot(tmpdir):

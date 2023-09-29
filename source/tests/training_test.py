@@ -5,7 +5,7 @@ import pandas as pd
 from PIL import Image
 import tensorflow as tf
 
-from .training import build_dataset, build_model, train_model
+from ..training import build_dataset, build_model, train_model
 
 
 @pytest.fixture
