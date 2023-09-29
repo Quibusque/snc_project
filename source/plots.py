@@ -58,6 +58,7 @@ def accuracy_loss_plot(
         if not os.path.exists(save_dir):
             os.makedirs(save_dir)
         plt.savefig(os.path.join(save_dir, model_name + "_accuracy_loss.png"))
+        print(f"Saved accuracy and loss to {save_dir}/{model_name}_accuracy_loss.png")
 
 
 def confusion_matrix_plot(
@@ -116,3 +117,4 @@ def confusion_matrix_plot(
         if not os.path.exists(save_dir):
             os.makedirs(save_dir)
         plt.savefig(os.path.join(save_dir, model_name + "_confusion_matrix.png"))
+        print(f"Saved confusion matrix to {save_dir}/{model_name}_confusion_matrix.png")

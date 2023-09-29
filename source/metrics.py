@@ -46,6 +46,7 @@ def save_accuracy_loss(
             f.write(
                 f"{i},{training_values_1[i]},{validation_values_1[i]},{training_values_2[i]},{validation_values_2[i]}\n"
             )
+        print(f"Saved accuracy and loss to {save_dir}/{model_name}_accuracy_loss.csv")
 
 
 def confusion_matrix(
@@ -112,3 +113,4 @@ def save_class_metrics(matrix: np.ndarray, save_dir: str, model_name: str) -> No
             f1 = 2 * precision * recall / (precision + recall)
 
             f.write(f"{i},{precision},{recall},{f1}\n")
+        print(f"Saved class metrics to {save_dir}/{model_name}_precision_recall_f1.csv")
