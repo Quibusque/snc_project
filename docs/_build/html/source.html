@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>source.geo_regions module &mdash; Software and Computing Project  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Climate regions references" href="references.html" />
+    <link rel="prev" title="snc_project" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Software and Computing Project
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="description.html">Description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">snc_project</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">source.geo_regions module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#source.geo_regions.get_point_region"><code class="docutils literal notranslate"><span class="pre">get_point_region()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#source.geo_regions.get_poly_list"><code class="docutils literal notranslate"><span class="pre">get_poly_list()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-source.metrics">source.metrics module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#source.metrics.confusion_matrix"><code class="docutils literal notranslate"><span class="pre">confusion_matrix()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#source.metrics.save_accuracy_loss"><code class="docutils literal notranslate"><span class="pre">save_accuracy_loss()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#source.metrics.save_class_metrics"><code class="docutils literal notranslate"><span class="pre">save_class_metrics()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-source.plots">source.plots module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#source.plots.accuracy_loss_plot"><code class="docutils literal notranslate"><span class="pre">accuracy_loss_plot()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#source.plots.confusion_matrix_plot"><code class="docutils literal notranslate"><span class="pre">confusion_matrix_plot()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-source.training">source.training module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#source.training.build_dataset"><code class="docutils literal notranslate"><span class="pre">build_dataset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#source.training.build_model"><code class="docutils literal notranslate"><span class="pre">build_model()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#source.training.train_model"><code class="docutils literal notranslate"><span class="pre">train_model()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-source.utils">source.utils module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#source.utils.delete_wrong_files"><code class="docutils literal notranslate"><span class="pre">delete_wrong_files()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#source.utils.format_id_to_filename"><code class="docutils literal notranslate"><span class="pre">format_id_to_filename()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#source.utils.labels_for_dataset"><code class="docutils literal notranslate"><span class="pre">labels_for_dataset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#source.utils.make_labelled_dataframe"><code class="docutils literal notranslate"><span class="pre">make_labelled_dataframe()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#source.utils.prepare_dataframe_and_files_for_training"><code class="docutils literal notranslate"><span class="pre">prepare_dataframe_and_files_for_training()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#source.utils.remove_wrong_entries"><code class="docutils literal notranslate"><span class="pre">remove_wrong_entries()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#source.utils.reset_images_position"><code class="docutils literal notranslate"><span class="pre">reset_images_position()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#source.utils.sample_labels"><code class="docutils literal notranslate"><span class="pre">sample_labels()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">Climate regions references</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Software and Computing Project</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">snc_project</a></li>
+      <li class="breadcrumb-item active">source.geo_regions module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/source.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-source.geo_regions">
+<span id="source-geo-regions-module"></span><h1>source.geo_regions module<a class="headerlink" href="#module-source.geo_regions" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="source.geo_regions.get_point_region">
+<span class="sig-prename descclassname"><span class="pre">source.geo_regions.</span></span><span class="sig-name descname"><span class="pre">get_point_region</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polygons</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">99</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/source/geo_regions.html#get_point_region"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#source.geo_regions.get_point_region" title="Permalink to this definition"></a></dt>
+<dd><p>Given a list of polygons and a point (x, y), returns the index of the
+polygon that contains the point. Default is returned if no polygon
+contains the point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>float</em>) – x coordinate of point</p></li>
+<li><p><strong>y</strong> (<em>float</em>) – y coordinate of point</p></li>
+<li><p><strong>polygons</strong> (<em>list</em>) – list of shapely.Polygon</p></li>
+<li><p><strong>default</strong> (<em>int</em>) – default value to return if no polygon contains point</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>index of polygon that contains point</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="source.geo_regions.get_poly_list">
+<span class="sig-prename descclassname"><span class="pre">source.geo_regions.</span></span><span class="sig-name descname"><span class="pre">get_poly_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">)</span> <span class="pre">-&gt;</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'dict'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/source/geo_regions.html#get_poly_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#source.geo_regions.get_poly_list" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a list of polygons and a dictionary of corresponding region names.</p>
+<p>The list of polygons is a list of shapely.Polygon, each representing a
+climate region. The dictionary of region names is a dictionary mapping
+region index to region acronyms.</p>
+<p>The source for the csv file is: <a class="reference external" href="https://github.com/IPCC-WG1/Atlas">https://github.com/IPCC-WG1/Atlas</a></p>
+</dd></dl>
+
+</section>
+<section id="module-source.metrics">
+<span id="source-metrics-module"></span><h1>source.metrics module<a class="headerlink" href="#module-source.metrics" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="source.metrics.confusion_matrix">
+<span class="sig-prename descclassname"><span class="pre">source.metrics.</span></span><span class="sig-name descname"><span class="pre">confusion_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DatasetV2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_classes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/source/metrics.html#confusion_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#source.metrics.confusion_matrix" title="Permalink to this definition"></a></dt>
+<dd><p>This function computes the confusion matrix for a given dataset and model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<em>tf.data.Dataset</em>) – dataset to compute confusion matrix for</p></li>
+<li><p><strong>model</strong> (<em>tf.keras.Model</em>) – model to use for predictions</p></li>
+<li><p><strong>num_classes</strong> (<em>int</em>) – number of classes for this model</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>confusion matrix</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>matrix (np.ndarray)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="source.metrics.save_accuracy_loss">
+<span class="sig-prename descclassname"><span class="pre">source.metrics.</span></span><span class="sig-name descname"><span class="pre">save_accuracy_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">history</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">History</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/source/metrics.html#save_accuracy_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#source.metrics.save_accuracy_loss" title="Permalink to this definition"></a></dt>
+<dd><p>This function saves the accuracy and loss for the training and validation to a
+csv file as “save_dir/model_name_accuracy_loss.csv”.
+Accuracy and loss can have arbitrary names, but there must be exactly 2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>history</strong> (<em>tf.keras.callbacks.History</em>) – history object returned by model.fit()</p></li>
+<li><p><strong>model</strong> (<em>tf.keras.models.Model</em>) – model to plot the accuracy and loss for</p></li>
+<li><p><strong>model_name</strong> (<em>str</em>) – name of the model (used for the file name)</p></li>
+<li><p><strong>save_dir</strong> (<em>str</em>) – path to the directory to save the accuracy and loss plot</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – if there are not exactly 2 metrics</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="source.metrics.save_class_metrics">
+<span class="sig-prename descclassname"><span class="pre">source.metrics.</span></span><span class="sig-name descname"><span class="pre">save_class_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/source/metrics.html#save_class_metrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#source.metrics.save_class_metrics" title="Permalink to this definition"></a></dt>
+<dd><p>This function computes the precision, recall and f1 score for each class
+based on the confusion matrix and saves them to a csv file in the path
+“save_dir/model_name_precision_recall_f1.csv”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>matrix</strong> – The confusion matrix.</p></li>
+<li><p><strong>save_dir</strong> – The directory to save the csv file to.</p></li>
+<li><p><strong>model_name</strong> – The name of the model (for the file name).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-source.plots">
+<span id="source-plots-module"></span><h1>source.plots module<a class="headerlink" href="#module-source.plots" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="source.plots.accuracy_loss_plot">
+<span class="sig-prename descclassname"><span class="pre">source.plots.</span></span><span class="sig-name descname"><span class="pre">accuracy_loss_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">history</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">History</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/source/plots.html#accuracy_loss_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#source.plots.accuracy_loss_plot" title="Permalink to this definition"></a></dt>
+<dd><p>This function plots the accuracy and loss for the training and validation and
+saves it to a file as “save_dir/model_name_accuracy_loss.png”.
+Accuracy and loss can have arbitrary names, but there must be exactly 2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>history</strong> (<em>tf.keras.callbacks.History</em>) – history object returned by model.fit()</p></li>
+<li><p><strong>model</strong> (<em>tf.keras.models.Model</em>) – model to plot the accuracy and loss for</p></li>
+<li><p><strong>model_name</strong> (<em>str</em>) – name of the model (used for the file name)</p></li>
+<li><p><strong>save_dir</strong> (<em>str</em>) – path to the directory to save the accuracy and loss plot</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – if there are not exactly 2 metrics</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="source.plots.confusion_matrix_plot">
+<span class="sig-prename descclassname"><span class="pre">source.plots.</span></span><span class="sig-name descname"><span class="pre">confusion_matrix_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalization</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chosen_labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/source/plots.html#confusion_matrix_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#source.plots.confusion_matrix_plot" title="Permalink to this definition"></a></dt>
+<dd><p>This function plots the confusion matrix and saves it to a file as
+“save_dir/model_name_confusion_matrix.png”.</p>
+<p>Normalization can be one of [“row”,”col”,”max”,None].
+“row” and “col” normalization normalizes the sum of rows or columns to be 1.
+“max” normalization normalizes the matrix to have maximum value 1.
+None does not normalize the matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>matrix</strong> (<em>np.ndarray</em>) – confusion matrix</p></li>
+<li><p><strong>normalization</strong> (<em>str</em>) – type of normalization</p></li>
+<li><p><strong>name_dict</strong> (<em>dict</em>) – dictionary mapping class index to class name</p></li>
+<li><p><strong>chosen_labels</strong> (<em>list</em>) – list of labels that were used for training</p></li>
+<li><p><strong>model_name</strong> (<em>str</em>) – name of the model (used for the file name)</p></li>
+<li><p><strong>save_dir</strong> (<em>str</em>) – path to the directory to save the confusion matrix plot</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-source.training">
+<span id="source-training-module"></span><h1>source.training module<a class="headerlink" href="#module-source.training" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="source.training.build_dataset">
+<span class="sig-prename descclassname"><span class="pre">source.training.</span></span><span class="sig-name descname"><span class="pre">build_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_good</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shuffle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_split</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(256,</span> <span class="pre">256)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crop_to_aspect_ratio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'label'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DatasetV2</span></span></span><a class="reference internal" href="_modules/source/training.html#build_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#source.training.build_dataset" title="Permalink to this definition"></a></dt>
+<dd><p>This function builds a tf dataset from a directory of images and a dataframe
+with the image file names and labels.
+If validation_split is not None, the dataset is split into training and
+validation sets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>img_dir</strong> (<em>str</em>) – path to image directory</p></li>
+<li><p><strong>df_good</strong> (<em>pd.DataFrame</em>) – dataframe with image file names and labels</p></li>
+<li><p><strong>shuffle</strong> (<em>bool</em>) – whether to shuffle the dataset</p></li>
+<li><p><strong>seed</strong> (<em>int</em>) – seed for shuffling</p></li>
+<li><p><strong>validation_split</strong> (<em>float</em>) – fraction of the dataset to use for
+validation. Defaults to None.</p></li>
+<li><p><strong>image_size</strong> (<em>tuple</em>) – size of the images in the dataset. Defaults to (256,256).</p></li>
+<li><p><strong>crop_to_aspect_ratio</strong> (<em>bool</em>) – whether to crop the images to the aspect
+ratio of image_size. Defaults to True.</p></li>
+<li><p><strong>batch_size</strong> (<em>int</em>) – batch size. Defaults to 64.</p></li>
+<li><p><strong>label_key</strong> (<em>str</em>) – name of the column containing the labels. Defaults to “label”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>dataset (tf.data.Dataset): dataset of images and labels
+if validation_split is not None:</p>
+<blockquote>
+<div><p>training (tf.data.Dataset): training dataset
+validation (tf.data.Dataset): validation dataset</p>
+</div></blockquote>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>if validation_split is None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="source.training.build_model">
+<span class="sig-prename descclassname"><span class="pre">source.training.</span></span><span class="sig-name descname"><span class="pre">build_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_classes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Loss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(256,</span> <span class="pre">256,</span> <span class="pre">3)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_summary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Model</span></span></span><a class="reference internal" href="_modules/source/training.html#build_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#source.training.build_model" title="Permalink to this definition"></a></dt>
+<dd><p>This function builds a model with the EfficientNetV2B0 network as the base
+and a dense layer with softmax activation as the head. The model is compiled
+with the Adam optimizer, the specified loss function and the specified metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_classes</strong> (<em>int</em>) – number of classes</p></li>
+<li><p><strong>metric</strong> (<em>tf.keras.metrics.Metric</em>) – metric to use for evaluation</p></li>
+<li><p><strong>loss</strong> (<em>tf.keras.losses.Loss</em>) – loss function</p></li>
+<li><p><strong>dropout_rate</strong> (<em>float</em>) – dropout rate. Defaults to 0.2.</p></li>
+<li><p><strong>input_shape</strong> (<em>tuple</em>) – shape of the input images. Defaults to (256,256,3).</p></li>
+<li><p><strong>print_summary</strong> (<em>bool</em>) – whether to print the model summary. Defaults to True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>compiled model</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>model (tf.keras.models.Model)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="source.training.train_model">
+<span class="sig-prename descclassname"><span class="pre">source.training.</span></span><span class="sig-name descname"><span class="pre">train_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkpoint_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">patience</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_weights_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_best_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">History</span></span></span><a class="reference internal" href="_modules/source/training.html#train_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#source.training.train_model" title="Permalink to this definition"></a></dt>
+<dd><p>This function trains a model on the training data and evaluates it on the
+validation data. Early stopping is used to stop training if the validation
+loss does not improve for patience epochs. The model weights are saved to
+“checkpoint_dir/model_name” after each epoch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>tf.keras.models.Model</em>) – model to train</p></li>
+<li><p><strong>training_data</strong> (<em>tf.data.Dataset</em>) – training dataset</p></li>
+<li><p><strong>validation_data</strong> (<em>tf.data.Dataset</em>) – validation dataset</p></li>
+<li><p><strong>epochs</strong> (<em>int</em>) – number of epochs</p></li>
+<li><p><strong>model_name</strong> (<em>str</em>) – name of the model (used for saving the weights)</p></li>
+<li><p><strong>checkpoint_dir</strong> (<em>str</em>) – path to the directory to save the weights to</p></li>
+<li><p><strong>patience</strong> (<em>int</em>) – number of epochs to wait before stopping training if
+the validation loss does not improve. Defaults to 3.</p></li>
+<li><p><strong>save_weights_only</strong> (<em>bool</em>) – whether to save only the weights or the whole
+model. Defaults to True.</p></li>
+<li><p><strong>save_best_only</strong> (<em>bool</em>) – whether to save only the weights of the best
+model. Defaults to True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>history object containing training</dt><dd><p>and validation metrics</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>history (tf.keras.callbacks.History)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-source.utils">
+<span id="source-utils-module"></span><h1>source.utils module<a class="headerlink" href="#module-source.utils" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="source.utils.delete_wrong_files">
+<span class="sig-prename descclassname"><span class="pre">source.utils.</span></span><span class="sig-name descname"><span class="pre">delete_wrong_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'file_name'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/source/utils.html#delete_wrong_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#source.utils.delete_wrong_files" title="Permalink to this definition"></a></dt>
+<dd><p>Deletes files in the image directory that do not have corresponding entries
+in the dataframe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – dataframe</p></li>
+<li><p><strong>img_dir</strong> (<em>str</em>) – path to image directory</p></li>
+<li><p><strong>file_name_key</strong> (<em>str</em>) – name of the column containing the file names. Defaults to “file_name”.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="source.utils.format_id_to_filename">
+<span class="sig-prename descclassname"><span class="pre">source.utils.</span></span><span class="sig-name descname"><span class="pre">format_id_to_filename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'file_name'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/source/utils.html#format_id_to_filename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#source.utils.format_id_to_filename" title="Permalink to this definition"></a></dt>
+<dd><p>Changes the name of the “id” column of the dataframe to file_name_key and
+appends “.jpeg” to each entry in the column.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – dataframe to modify</p></li>
+<li><p><strong>file_name_key</strong> (<em>str</em>) – new name of the “id” column. Defaults to “file_name”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>modified dataframe</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="source.utils.labels_for_dataset">
+<span class="sig-prename descclassname"><span class="pre">source.utils.</span></span><span class="sig-name descname"><span class="pre">labels_for_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'label'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/source/utils.html#labels_for_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#source.utils.labels_for_dataset" title="Permalink to this definition"></a></dt>
+<dd><p>This function returns a list of labels for a given dataframe, where the labels
+are mapped according to the dictionary map.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="source.utils.make_labelled_dataframe">
+<span class="sig-prename descclassname"><span class="pre">source.utils.</span></span><span class="sig-name descname"><span class="pre">make_labelled_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'label'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'file_name'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/source/utils.html#make_labelled_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#source.utils.make_labelled_dataframe" title="Permalink to this definition"></a></dt>
+<dd><p>This function takes the csv file with the list of images in the img_dir and
+the coordinates of the images and returns a dataframe with the labels for each image.</p>
+<p>The input csv must have a specific format where the “id” column contains the file names
+without the “.jpeg” extension. The lng and lat columns contain the longitude and
+latitude coordinates of the images.
+The dataframe is “sanitized” because images in the img_dir that are not in the csv
+are deleted and images in the csv that are not in the img_dir are deleted.
+The regions to label the images are computed using the geo_regions module.
+In the output dataframe, the “id” column is renamed to file_name_key where filenames
+have the “.jpeg” extension appended to them. The label for each image is stored in
+a new column with the name label_key.
+name_dict is a dictionary mapping region numbers to region acronyms (see geo_regions.py)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>csv_path</strong> (<em>str</em>) – path to the csv file</p></li>
+<li><p><strong>img_dir</strong> (<em>str</em>) – path to the image directory</p></li>
+<li><p><strong>label_key</strong> (<em>str</em>) – name of the column containing the labels. Defaults to “label”.</p></li>
+<li><p><strong>file_name_key</strong> (<em>str</em>) – name of the column containing the file names. Defaults to “file_name”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>dataframe with the labels
+name_dict (dict): dictionary mapping region names to region labels</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>df (pd.DataFrame)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="source.utils.prepare_dataframe_and_files_for_training">
+<span class="sig-prename descclassname"><span class="pre">source.utils.</span></span><span class="sig-name descname"><span class="pre">prepare_dataframe_and_files_for_training</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chosen_labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bad_img_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_img_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'label'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'file_name'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/source/utils.html#prepare_dataframe_and_files_for_training"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#source.utils.prepare_dataframe_and_files_for_training" title="Permalink to this definition"></a></dt>
+<dd><p>Given a list of labels, this function:
+1. Moves all images whose labels are not in the list to the bad_img_dir
+2. Creates a dataframe with at most num_samples images for each label
+3. Moves excess images that were not sampled to the test_img_dir</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – dataframe with the labels</p></li>
+<li><p><strong>chosen_labels</strong> (<em>list</em>) – list of labels to keep</p></li>
+<li><p><strong>img_dir</strong> (<em>str</em>) – path to the image directory</p></li>
+<li><p><strong>bad_img_dir</strong> (<em>str</em>) – path to the directory to move bad images to</p></li>
+<li><p><strong>test_img_dir</strong> (<em>str</em>) – path to the directory to move test images to</p></li>
+<li><p><strong>num_samples</strong> (<em>int</em>) – maximum number of samples for each label</p></li>
+<li><p><strong>seed</strong> (<em>int</em>) – seed for random shuffling</p></li>
+<li><p><strong>label_key</strong> (<em>str</em>) – name of the column containing the labels. Defaults to “label”.</p></li>
+<li><p><strong>file_name_key</strong> (<em>str</em>) – name of the column containing the file names. Defaults to “file_name”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>dataframe with the sampled good labels
+df_test (pd.DataFrame): dataframe with the test images</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>df_good (pd.DataFrame)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="source.utils.remove_wrong_entries">
+<span class="sig-prename descclassname"><span class="pre">source.utils.</span></span><span class="sig-name descname"><span class="pre">remove_wrong_entries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'file_name'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/source/utils.html#remove_wrong_entries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#source.utils.remove_wrong_entries" title="Permalink to this definition"></a></dt>
+<dd><p>Removes entries from the dataframe that do not have corresponding files in
+the image directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – dataframe</p></li>
+<li><p><strong>img_dir</strong> (<em>str</em>) – path to image directory</p></li>
+<li><p><strong>file_name_key</strong> (<em>str</em>) – name of the column containing the file names. Defaults to “file_name”.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="source.utils.reset_images_position">
+<span class="sig-prename descclassname"><span class="pre">source.utils.</span></span><span class="sig-name descname"><span class="pre">reset_images_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bad_img_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_img_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/source/utils.html#reset_images_position"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#source.utils.reset_images_position" title="Permalink to this definition"></a></dt>
+<dd><p>This function moves all images in bad_img_dir and test_img_dir back to img_dir
+after checking that directories bad_img_dir and test_img_dir exist.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>img_dir</strong> (<em>str</em>) – path to the image directory</p></li>
+<li><p><strong>bad_img_dir</strong> (<em>str</em>) – path to the directory bad images were moved to</p></li>
+<li><p><strong>test_img_dir</strong> (<em>str</em>) – path to the directory test images were moved to</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="source.utils.sample_labels">
+<span class="sig-prename descclassname"><span class="pre">source.utils.</span></span><span class="sig-name descname"><span class="pre">sample_labels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'label'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'file_name'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/source/utils.html#sample_labels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#source.utils.sample_labels" title="Permalink to this definition"></a></dt>
+<dd><p>This function takes a dataframe with a column of labels and returns
+a dataframe with at most num_samples entries for each label.</p>
+<p>Before sampling, the dataframe is randomly shuffled with seed.
+The dataframe is sorted by alphabetical order of file_name_key after sampling
+because this is the order that the images are loaded in by the tf dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – dataframe to sample from</p></li>
+<li><p><strong>num_samples</strong> (<em>int</em>) – maximum number of samples for each label</p></li>
+<li><p><strong>seed</strong> (<em>int</em>) – seed for random shuffling</p></li>
+<li><p><strong>label_key</strong> (<em>str</em>) – name of the column containing the labels. Defaults to “label”.</p></li>
+<li><p><strong>file_name_key</strong> (<em>str</em>) – name of the column containing the file names. Defaults to “file_name”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>sampled dataframe</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="snc_project" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="references.html" class="btn btn-neutral float-right" title="Climate regions references" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Marco Cruciani, Francesco Zenesini.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

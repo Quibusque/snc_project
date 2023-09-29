@@ -6,8 +6,7 @@ from .utils import (
     prepare_dataframe_and_files_for_training,
     reset_images_position,
     labels_for_dataset,
-    map_labels_to_range,
-    make_labelled_dataframe,
+    make_labelled_dataframe
 )
 import pytest
 import pandas as pd
