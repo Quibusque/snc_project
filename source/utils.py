@@ -163,6 +163,7 @@ def prepare_dataframe_and_files_for_training(
         os.rename(
             os.path.join(img_dir, file_name), os.path.join(bad_img_dir, file_name)
         )
+    print(f"Moved bad images to {bad_img_dir}")
 
     # df_good samples num_samples images from each class
     df_good = sample_labels(df_chosen, num_samples, seed)
@@ -173,6 +174,7 @@ def prepare_dataframe_and_files_for_training(
         os.rename(
             os.path.join(img_dir, file_name), os.path.join(test_img_dir, file_name)
         )
+    print(f"Moved test images to {test_img_dir}")
 
     # sort the dataframes by alphabetical order of file_name_key
     df_good = df_good.sort_values(by=file_name_key).reset_index(drop=True)
