@@ -195,30 +195,6 @@ def labels_for_dataset(df: pd.DataFrame, map: dict, label_key: str = "label") ->
     return true_label_list
 
 
-def map_labels_to_range(
-    df: pd.DataFrame, num_classes: int, label_key: str = "label"
-) -> dict:
-    """
-    This function takes a dataframe with the labels and returns a dictionary
-    mapping each label to a number in the range [0,num_classes).
-
-    Args:
-        df (pd.DataFrame): dataframe with the labels.
-        num_classes (int): number of classes.
-        label_key (str): name of the column containing the labels. Defaults to "label".
-
-    Returns:
-        mapping (dict): dictionary mapping each label to a number in the range [0,num_classes).
-    """
-    # unique labels in the dataframe
-    labels = df[label_key].unique()
-
-    # mapping brings labels to the range [0,num_classes)
-    mapping = {num: index for index, num in enumerate(labels)}
-
-    return mapping
-
-
 def reset_images_position(img_dir: str, bad_img_dir: str, test_img_dir: str) -> None:
     """
     This function moves all images in bad_img_dir and test_img_dir back to img_dir
